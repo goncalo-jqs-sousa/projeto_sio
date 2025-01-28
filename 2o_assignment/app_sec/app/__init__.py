@@ -25,7 +25,7 @@ app.config['MAIL_PASSWORD'] = os.getenv('PASSWORD', 0) #os.environ["PASSWORD"]
 app.config['MAIL_SERVER'] = "smtp.googlemail.com"
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_PORT'] = 587
-stripe.api_key = "sk_test_51O8pTdAElJdARQCXqwmug2j4G0wXP9AeNq8Ot9uFMNukXa9f6mPhsoMtGIuNJZrUetA1lYuqWynaYDqlnwLqYMc900IqQqd5mE"
+##stripe.api_key =                  # Aplicar uma devida key para testar 
 
 
 Bootstrap(app)
