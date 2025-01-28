@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Register - Flask-O-shop
+{% endblock %}
+
+{% block content %}
+    <h3 class="text-center"> Register to DETI Official Shop </h3>
+    <hr>
+    {% with msgs =  get_flashed_messages(with_categories=True) %}
+        {% for c, msg in msgs %}
+            {% if c == 'error' %}
+                <div class="flash-error">
+            {% else %}
+                <div class="success">
+            {% endif %}
+                {{ msg | safe }}</div><br>
+        {% endfor %}
+    {% endwith %}
+    <div class="forms">
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.name.label(class="form-control-label") }}
+                {{ form.name(class="form-control") }}
+                {% for error in form.name.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.phone.label(class="form-control-label") }}
+                {{ form.phone(class="form-control") }}
+                {% for error in form.phone.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.email.label(class="form-control-label") }}
+                {{ form.email(class="form-control") }}
+                {% for error in form.email.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.password.label(class="form-control-label") }}
+                <div class="input-group">
+                    {{ form.password(class="form-control password-input") }}
+                </div>
+                {% for error in form.password.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div id="password-strength"></div>
+            <div id="password-strength-warning"></div>
+            <div></div>
+            <div class="form-group">
+                {{ form.confirm.label(class="form-control-label") }}
+                <div class="input-group">
+                    {{ form.confirm(class="form-control confirm-input") }}
+                </div>
+                {% for error in form.confirm.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="form-group" style="display: flex; align-items: center;">
+                <input type="checkbox" id="terms" name="terms" style="transform: scale(1.4); margin-top: -55px;" required>
+                <label for="terms" style="margin-left: 10px;">I allow the storage of all personal details given in this registration, including data regarding orders for safety purposes.</label>
+            </div>
+
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+            <div class="form-group">
+                <a href="{{ url_for('login') }}">Already have an account? Login here.</a>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js"></script>
+    <script>
+        const passwordField = document.querySelector('.password-input');
+        const passwordStrength = document.getElementById('password-strength');
+        const passwordError = document.getElementById('password-error');
+
+        passwordField.addEventListener('input', function () {
+            const password = passwordField.value;
+            const strengthResult = zxcvbn(password);
+            updatePasswordStrength(strengthResult.score);
+            checkPasswordBreach(password);
+        });
+
+        function updatePasswordStrength(score) {
+            const strengthLevels = ['Very Weak', 'Weak', 'Moderate', 'Strong', 'Very Strong'];
+            passwordStrength.textContent = `Your Password is ${strengthLevels[score]}`;
+        }
+
+        function checkPasswordBreach(password) {
+            fetch('/check_password_strength', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ password: password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    passwordError.textContent = data.error;
+                } else {
+                    passwordError.textContent = 'Password is secure';
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+
+        function togglePassword(fieldId) {
+            const passwordField = document.getElementById(fieldId);
+            const toggleButton = passwordField.nextElementSibling;
+
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggleButton.textContent = 'Hide';
+            } else {
+                passwordField.type = 'password';
+                toggleButton.textContent = 'Show';
+            }
+        }
+    </script>
+{% endblock %}

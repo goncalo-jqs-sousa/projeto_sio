@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}
+	Data Information - Flask-O-shop
+{% endblock %}
+
+{% block content %}
+    <div class="text-center">
+        <h5> Are you sure you want to delete your account? All user data will be lost.
+        <a href="{{ url_for('home') }}">Go back!</a> <br>
+        <br> </h5>
+        <hr>
+        Name: {{ current_user.name }} <br>
+        Email: {{ current_user.email }} <br>
+        Phone: {{ current_user.phone }} <br>
+        <br> Data regarding orders are stored in the database for 30 days to prevent fraud. <br>
+        <hr>
+        <a class="nav-link" href="{{ url_for('delete') }}"><font color="red">Delete data</font></a>
+    </div>
+{% endblock %}
